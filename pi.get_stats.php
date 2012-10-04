@@ -36,7 +36,6 @@ class Get_Challenges
 		$this->EE->db->from('exp_channel_titles');	
 		$this->EE->db->where('url_title', $mem_url);
         $query3 = $this->EE->db->get('',1);
-        $variables = "";
 		
 		$row = $query3->row();
 		$mem_id = $row->entry_id;
@@ -101,33 +100,20 @@ class Get_Challenges
 			  $this->EE->typography->parse_images = TRUE;
 			  $total_pledge_amount = 0;
 			  $dollars_pledged = 0;
-			  $percentage_weightloss = 0;
-
-				if ($query2->num_rows() > 0)
-				{
-
-				  foreach($query2->result_array() as $row)
-				  {				 
-					  
-				  		$pledges[] = array('pl_auth_id' => $row['field_id_116'],
-				  						   'pl_end_date' => $row['expiration_date'], 
-				  						   'pl_title' => $row['title'], 'pl_amount' => $row['field_id_119'], 
-				  						   'pl_comment' => $row['field_id_122'], 
-				  						   'pl_fname' => $row['pl_fname'], 
-				  						   'pl_lname' => $row['pl_lname'], 
-										   'pl_city' => $row['pl_city'], 
-				  						   'pl_state' => $row['pl_state'], 			  						   
-				  						   'pl_pledge_date' => $row['entry_date']);
-					     $dollars_pledged = $dollars_pledged + $row['field_id_119'];
-				  }			
-					
-				}
-				else 
-				{
-					$pledges = NULL;
-				}	
-
-
+			  foreach($query2->result_array() as $row)
+			  {				 
+				  
+			  		$pledges[] = array('pl_auth_id' => $row['field_id_116'],
+			  						   'pl_end_date' => $row['expiration_date'], 
+			  						   'pl_title' => $row['title'], 'pl_amount' => $row['field_id_119'], 
+			  						   'pl_comment' => $row['field_id_122'], 
+			  						   'pl_fname' => $row['pl_fname'], 
+			  						   'pl_lname' => $row['pl_lname'], 
+									   'pl_city' => $row['pl_city'], 
+			  						   'pl_state' => $row['pl_state'], 			  						   
+			  						   'pl_pledge_date' => $row['entry_date']);
+				     $dollars_pledged = $dollars_pledged + $row['field_id_119'];
+			  }
 
 			  foreach($query->result_array() as $row)
 			  {	
@@ -137,21 +123,11 @@ class Get_Challenges
 					  }
 			      if ($row['expiration_date'] < $end) {$chal_status = "Complete";$days_remaining = "0";}	
 				  
-				  
 				  $current_weightloss = $row['initial_weight'] - $row['final_weight'];
 				  $goal_weightloss = $row['initial_weight'] - $row['goal_weight'];
 				  $percentage_weightloss_division = $current_weightloss /$goal_weightloss;
-				  if ($row['final_weight'] != "") 
-				  {
-				  	$percentage_weightloss = round($percentage_weightloss_division * 100);
-				  	$total_pledge_amount = $current_weightloss * $dollars_pledged;
-				  } 
-				  else
-				  {
-					
-				  }
-
-				  
+				  $percentage_weightloss = round($percentage_weightloss_division * 100);				  
+				  $total_pledge_amount = $current_weightloss * $dollars_pledged;
 				  
 				  $variable_row = array(
                                 'chal_id'          => $row['chal_id'],
@@ -167,7 +143,6 @@ class Get_Challenges
                                 'goal_weight'   => $row['goal_weight'],
 								'current_weightloss'  => $current_weightloss,
 								'goal_weightloss' => $goal_weightloss,
-								'final_weight' => $row['final_weight'],
 								'percentage_weightloss' => $percentage_weightloss,
 								'days_remaining' => $days_remaining,
 								'youtube_id' 	=> $row['youtube_id'],
